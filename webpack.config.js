@@ -1,5 +1,6 @@
 // node.js의 CommonJS 를 사용한 모듈화
 const path = require("path");
+const HelloWorldPlugin = require("./custom-plugin");
 
 module.exports = {
     mode: "development",
@@ -35,4 +36,5 @@ module.exports = {
             },
         ],
     },
+    plugins: [new HelloWorldPlugin({ options: true })],
 };
