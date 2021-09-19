@@ -10,7 +10,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
     mode: "development",
     entry: {
-        main: "./src/app_amd.js",
+        main: "./app.js",
     },
     output: {
         path: path.resolve("./dist"),
@@ -25,10 +25,10 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: [
-                    process.env.NODE_ENV === "production" ?
-                    MiniCssExtractPlugin.loader :
-                    // 로더의 실행 순서는 뒤에서부터 앞이다.
-                    "style-loader",
+                    process.env.NODE_ENV === "production"
+                        ? MiniCssExtractPlugin.loader
+                        : // 로더의 실행 순서는 뒤에서부터 앞이다.
+                          "style-loader",
                     "css-loader",
                 ],
             },
@@ -40,6 +40,11 @@ module.exports = {
                         maxSize: 4 * 1024, // 4kb
                     },
                 },
+            },
+            {
+                test: /\.js$/,
+                use: ["babel-loader"],
+                exclude: /node_modules/,
             },
         ],
     },
