@@ -19,6 +19,8 @@
         "@babel/preset-env": "^7.15.6",
         "core-js": "^3.17.3",
         "css-loader": "^6.2.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-prettier": "^4.0.0",
         "mini-css-extract-plugin": "^2.3.0",
         "prettier": "^2.4.0",
         "style-loader": "^3.2.1",
