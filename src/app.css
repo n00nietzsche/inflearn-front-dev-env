@@ -1,7 +1,7 @@
 .text-blue {
-    color: blue;
+  color: red;
 }
 
 body {
-    background-image: url(image.png);
+  background-image: url(image.png);
 }
