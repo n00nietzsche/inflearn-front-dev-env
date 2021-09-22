@@ -5,6 +5,7 @@ const childProcess = require("child_process");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+// const apiMocker = require("connect-api-mocker");
 
 module.exports = {
   mode: "development",
@@ -51,6 +52,12 @@ module.exports = {
     client: {
       overlay: true,
       logging: "error",
+    },
+    // onBeforeSetupMiddleware: (devServer) => {
+    //   devServer.app.use(apiMocker("/api", "mocks/api"));
+    // },
+    proxy: {
+      "/api": "http://localhost:8081",
     },
   },
   plugins: [
