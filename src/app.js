@@ -1,12 +1,20 @@
-import "./app.css";
-import axios from "axios";
+import form from "./form.js";
+import result from "./result.js";
+
+console.log("Abc12123312");
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const res = await axios.get("/api/users");
+  const formEl = document.createElement("div");
+  formEl.innerHTML = form.render();
+  document.body.appendChild(formEl);
 
-  document.body.innerHTML = (res.data || [])
-    .map((user) => {
-      return `<div>${user.id}: ${user.name}</div>`;
-    })
-    .join("");
+  const resultEl = document.createElement("div");
+  resultEl.innerHTML = await result.render();
+  document.body.appendChild(resultEl);
 });
+
+if (module.hot) {
+  console.log("핫모듈 켜짐");
+}
+
+// console.log("module", module);

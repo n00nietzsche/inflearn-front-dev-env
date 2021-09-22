@@ -5,13 +5,14 @@ const childProcess = require("child_process");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-// const apiMocker = require("connect-api-mocker");
+const apiMocker = require("connect-api-mocker");
 
 module.exports = {
   mode: "development",
   entry: {
-    main: "./src/app.js",
+    app: "./src/app.js",
   },
+  target: ["web", "es5"],
   output: {
     path: path.resolve("./dist"),
     // output 이름을 동적으로 나타낼 수 있는 효과가 있다.
@@ -19,16 +20,17 @@ module.exports = {
     // entry가 여러 개라면 output도 여러 개다.
     filename: "[name].js",
     assetModuleFilename: "static/[name][ext]?[hash]",
+    clean: true,
   },
   module: {
     rules: [
       {
         test: /\.css$/,
         use: [
-          process.env.NODE_ENV === "production"
-            ? MiniCssExtractPlugin.loader
-            : // 로더의 실행 순서는 뒤에서부터 앞이다.
-              "style-loader",
+          // process.env.NODE_ENV === "production"
+          //   ? MiniCssExtractPlugin.loader
+          //   : // 로더의 실행 순서는 뒤에서부터 앞이다.
+          "style-loader",
           "css-loader",
         ],
       },
@@ -51,25 +53,26 @@ module.exports = {
   devServer: {
     client: {
       overlay: true,
-      logging: "error",
+      logging: "info",
     },
-    // onBeforeSetupMiddleware: (devServer) => {
-    //   devServer.app.use(apiMocker("/api", "mocks/api"));
+    onBeforeSetupMiddleware: (devServer) => {
+      devServer.app.use(apiMocker("/api", "mocks/api"));
+    },
+    hot: true,
+    // proxy: {
+    //   "/api": "http://localhost:8081",
     // },
-    proxy: {
-      "/api": "http://localhost:8081",
-    },
   },
   plugins: [
     new webpack.BannerPlugin({
       banner: `
-            name: [name] 
-            content: 배너 테스트 
+            name: [name]
+            content: 배너 테스트
             date: ${new Date().toLocaleDateString()}
             commit version: ${childProcess.execSync(
               "git rev-parse --short HEAD"
             )}
-            author: ${childProcess.execSync("git config user.name")} 
+            author: ${childProcess.execSync("git config user.name")}
             `,
     }),
     new webpack.DefinePlugin({
@@ -78,6 +81,7 @@ module.exports = {
       SERVICE_URL: JSON.stringify("https://myservice.com/"),
     }),
     new HtmlWebpackPlugin({
+      title: "Hot Module Replacement",
       template: "./index.html",
       templateParameters: {
         env:
@@ -95,5 +99,6 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: "[name].css",
     }),
+    new webpack.HotModuleReplacementPlugin(),
   ],
 };
