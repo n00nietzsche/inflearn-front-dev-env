@@ -6,11 +6,16 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const apiMocker = require("connect-api-mocker");
+const mode = process.env.NODE_ENV || "development";
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+// const TerserPlugin = require("terser-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-  mode: "development",
+  mode,
   entry: {
     app: "./src/app.js",
+    math: "./src/math.js",
   },
   target: ["web", "es5"],
   output: {
@@ -26,13 +31,7 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: [
-          // process.env.NODE_ENV === "production"
-          //   ? MiniCssExtractPlugin.loader
-          //   : // 로더의 실행 순서는 뒤에서부터 앞이다.
-          "style-loader",
-          "css-loader",
-        ],
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
@@ -99,6 +98,32 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: "[name].css",
     }),
-    new webpack.HotModuleReplacementPlugin(),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "./node_modules/axios/dist/axios.min.js",
+          to: "./axios.min.js",
+        },
+      ],
+    }),
   ],
+  externals: {
+    axios: "axios",
+  },
+  optimization: {
+    minimize: mode === "production",
+    minimizer: [
+      // new TerserPlugin({
+      //   terserOptions: {
+      //     compress: {
+      //       drop_console: true, // 콘솔 로그를 제거
+      //     },
+      //   },
+      // }),
+      new CssMinimizerPlugin(),
+    ],
+    // splitChunks: {
+    //   chunks: "all",
+    // },
+  },
 };

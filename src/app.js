@@ -1,7 +1,9 @@
+import "./app.css";
+
 import form from "./form.js";
 import result from "./result.js";
 
-console.log("Abc12123312");
+console.log("hello world");
 
 document.addEventListener("DOMContentLoaded", async () => {
   const formEl = document.createElement("div");
@@ -12,9 +14,3 @@ document.addEventListener("DOMContentLoaded", async () => {
   resultEl.innerHTML = await result.render();
   document.body.appendChild(resultEl);
 });
-
-if (module.hot) {
-  console.log("핫모듈 켜짐");
-}
-
-// console.log("module", module);
